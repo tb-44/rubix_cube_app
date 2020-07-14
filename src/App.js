@@ -1,26 +1,37 @@
-import React from "react";
-import logo from "./logo.svg";
+import React, { Component } from "react";
 import "./App.css";
+import "babel-polyfill";
+import { Provider, connect } from "react-redux";
+import reducers from "./reducers";
+import actions from "./actions";
+import sagas from "./sagas";
+import { createStore, bindActionCreators, applyMiddleware } from "redux";
+import createSagaMiddleware from "redux-saga";
+import Puzzle from "./Puzzle";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor(props) {
+    super(props);
+
+    const sagaMiddleware = createSagaMiddleware();
+    this.store = createStore(reducers, applyMiddleware(sagaMiddleware));
+    this.Connected = connect(reducers, (dispatch) => ({
+      actions: bindActionCreators(actions, dispatch),
+    }))(Puzzle);
+    this.mainTask = sagaMiddleware.run(sagas);
+  }
+  componentWillUnmount() {
+    this.mainTask.cancel();
+  }
+  render() {
+    return (
+      <div className="App">
+        <Provider store={this.store}>
+          <this.Connected />
+        </Provider>
+      </div>
+    );
+  }
 }
 
 export default App;
