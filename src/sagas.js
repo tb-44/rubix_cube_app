@@ -1,8 +1,7 @@
-import { take, put, fork, race, call } from "redux-saga/effects";
-import { delay } from "redux-saga";
+import { take, put, fork, race, call, delay } from "redux-saga/effects";
 import actionCreators, { COMMIT_SPIN, RANDOMIZE } from "./actions";
 
-const randomNumber = 36;
+const randomNumber = 35;
 
 function* randomlySpin() {
   // Randomly select an axis and direction, rotating cube
@@ -13,7 +12,7 @@ function* randomlySpin() {
 }
 
 function* randomizeCube() {
-  // Perform random spinSlice 36 times to shuffle cube
+  // Perform random spinSlice 35 times to shuffle cube
   let lastSlice = null;
   for (let i = 0; i < randomNumber; i++) {
     if (i % 4 === 0) yield fork(randomlySpin);
