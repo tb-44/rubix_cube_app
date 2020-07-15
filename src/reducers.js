@@ -9,6 +9,7 @@ import {
 } from "./actions";
 import { combineReducers } from "redux";
 
+// Initial state of what colors are on each side of the cube
 const PUZZLE_SIZE = 3;
 const buildSolidSide = (num) => {
   const row = [];
@@ -29,6 +30,8 @@ const initialSideColors = {
   back: buildSolidSide(4),
   bottom: buildSolidSide(5),
 };
+
+// Base Reducers
 
 // sideColors - The positions of each color on the sides of the cube
 const sideColors = (state = initialSideColors) => state;
@@ -141,6 +144,7 @@ const reduceCommitSpin = ({ sideColors, spinQueue }) => {
   };
 };
 
+// ==========
 // Main Reducer
 export default (state = {}, action = {}) => {
   switch (action.type) {

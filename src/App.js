@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import "./App.css";
 import "babel-polyfill";
+import Puzzle from "./Puzzle";
 import { Provider, connect } from "react-redux";
 import reducers from "./reducers";
-import actions from "./actions";
-import sagas from "./sagas";
+import actionCreators from "./actions";
+import mainSaga from "./sagas";
 import { createStore, bindActionCreators, applyMiddleware } from "redux";
 import createSagaMiddleware from "redux-saga";
-import Puzzle from "./Puzzle";
 
 class App extends Component {
   constructor(props) {
@@ -16,9 +16,9 @@ class App extends Component {
     const sagaMiddleware = createSagaMiddleware();
     this.store = createStore(reducers, applyMiddleware(sagaMiddleware));
     this.Connected = connect(reducers, (dispatch) => ({
-      actions: bindActionCreators(actions, dispatch),
+      actions: bindActionCreators(actionCreators, dispatch),
     }))(Puzzle);
-    this.mainTask = sagaMiddleware.run(sagas);
+    this.mainTask = sagaMiddleware.run(mainSaga);
   }
   componentWillUnmount() {
     this.mainTask.cancel();
