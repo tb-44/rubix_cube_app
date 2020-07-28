@@ -49,6 +49,7 @@ export default ({ type, dir, depth, colors }) => {
             case "right":
               return 2;
             default:
+              // eslint-disable-next-line no-throw-literal
               throw "Invalid edge x position";
           }
         case "corner":
@@ -58,6 +59,7 @@ export default ({ type, dir, depth, colors }) => {
             case "right":
               return 2;
             default:
+              // eslint-disable-next-line no-throw-literal
               throw "Invalid corner x position";
           }
         default:
@@ -79,6 +81,7 @@ export default ({ type, dir, depth, colors }) => {
             case "right":
               return 1;
             default:
+              // eslint-disable-next-line no-throw-literal
               throw "Invalid edge y position";
           }
         case "corner":
@@ -88,6 +91,7 @@ export default ({ type, dir, depth, colors }) => {
             case "bottom":
               return 2;
             default:
+              // eslint-disable-next-line no-throw-literal
               throw "Invalid corner y position";
           }
         default:

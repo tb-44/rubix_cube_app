@@ -71,6 +71,7 @@ export default (sideColors, sliceNumber, forward = true) => {
   const newSideColors = JSON.parse(JSON.stringify(sideColors));
   const sliceDef = sliceMap[sliceNumber];
   // Look up initial positions of the rotating rows/cols
+  // eslint-disable-next-line array-callback-return
   const transforms = sliceDef.map((operation) => {
     const [sideName, row, column] = operation;
     if (row !== null) {
