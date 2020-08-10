@@ -1,12 +1,12 @@
-import { take, put, fork, race, call } from "redux-saga/effects";
-import { delay } from "redux-saga/effects";
-import actionCreators, { COMMIT_SPIN, RANDOMIZE } from "./actions";
+import { take, put, fork, race, call } from 'redux-saga/effects';
+import { delay } from 'redux-saga';
+import actionCreators, { COMMIT_SPIN, RANDOMIZE } from './actions';
 
 const randomNumber = 35;
 
 function* randomlySpin() {
   // Randomly select an axis and a direction, and rotate the cube that way
-  const axes = ["x", "y", "z"];
+  const axes = ['x', 'y', 'z'];
   const axis = axes[Math.floor(Math.random() * 3)];
   const direction = Boolean(Math.round(Math.random()));
   yield put(actionCreators.rotateCube(axis, direction));
@@ -20,7 +20,7 @@ function* randomizeCube() {
     if (i % 4 === 0) yield fork(randomlySpin);
 
     let slice = lastSlice;
-    while (slice === lastSlice) {
+    while(slice === lastSlice) {
       slice = Math.floor(Math.random() * 9);
     }
     const direction = Boolean(Math.round(Math.random()));
@@ -30,7 +30,7 @@ function* randomizeCube() {
     // transitionend event
     yield race({
       nextSpin: take(COMMIT_SPIN),
-      timeout: call(delay, 200),
+      timeout: call(delay, 200)
     });
   }
   yield put(actionCreators.endRandomize());
@@ -42,6 +42,8 @@ function* watchRandomize() {
   }
 }
 
-export default function* () {
-  yield [fork(watchRandomize)];
+export default function*() {
+  yield [
+    fork(watchRandomize)
+  ];
 }

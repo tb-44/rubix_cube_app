@@ -1,13 +1,8 @@
-import spinSlice from "./util/spinSlice";
-import {
-  SPIN_SLICE,
-  ROTATE_CUBE,
-  COMMIT_ROTATE,
-  COMMIT_SPIN,
-  RANDOMIZE,
-  END_RANDOMIZE,
-} from "./actions";
-import { combineReducers } from "redux";
+import spinSlice from './util/spinSlice';
+import { SPIN_SLICE, ROTATE_CUBE, COMMIT_ROTATE, COMMIT_SPIN, RANDOMIZE,
+         END_RANDOMIZE } from './actions';
+import { combineReducers } from 'redux';
+
 
 // Initial state of what colors are on each side of the cube
 const PUZZLE_SIZE = 3;
@@ -28,7 +23,7 @@ const initialSideColors = {
   top: buildSolidSide(2),
   right: buildSolidSide(3),
   back: buildSolidSide(4),
-  bottom: buildSolidSide(5),
+  bottom: buildSolidSide(5)
 };
 
 // Base Reducers
@@ -39,14 +34,14 @@ const sideColors = (state = initialSideColors) => state;
 // rotation - The rotation animation to apply to the cube
 // (Rotating the cube plays the rotate animation, then applies the change to
 // sideColors and resets the rotation state)
-const reduceRotation = (state, { axis, direction }) =>
+const reduceRotation = (state, {axis, direction}) =>
   direction ? state[axis] + 90 : state[axis] - 90;
 
-const initialRotation = { x: 0, y: 0, z: 0 };
+const initialRotation = {x: 0, y: 0, z: 0};
 const rotation = (state = initialRotation, action = {}) => {
   switch (action.type) {
     case ROTATE_CUBE:
-      return { ...state, [action.axis]: reduceRotation(state, action) };
+      return {...state, [action.axis]: reduceRotation(state, action)};
     default:
       return state;
   }
@@ -92,11 +87,7 @@ const isRandomizing = (state = false, action = {}) => {
 
 // By default, run simple reducers on each property
 const reduceDefault = combineReducers({
-  sideColors,
-  rotation,
-  rotationQueue,
-  spinQueue,
-  isRandomizing,
+  sideColors, rotation, rotationQueue, spinQueue, isRandomizing
 });
 
 // ==========
@@ -104,27 +95,25 @@ const reduceDefault = combineReducers({
 // These reducers happen as the result of transitionend events, not user input
 
 // Reduce a cube rotation into multiple spinSlice calls
-const reduceCommitRotate = ({ rotationQueue, sideColors }) => {
+const reduceCommitRotate = ({rotationQueue, sideColors}) => {
+
   // Helper function to spin all three slices on an axis at once
   const spinSlices = (colorState, slices, forward) => {
     let state = colorState;
-    slices.forEach((s) => (state = spinSlice(state, s, forward)));
+    slices.forEach(s => state = spinSlice(state, s, forward));
     return state;
   };
 
   // Go through each rotation action in the rotationQueue, and apply it to
   // the sideColors through a spinSlices call
   let newSideColors = sideColors;
-  rotationQueue.forEach(({ axis, direction }) => {
-    const forward = axis === "x" ? !direction : direction;
+  rotationQueue.forEach(({axis, direction}) => {
+    const forward = axis === 'x' ? !direction : direction;
     const slices =
-      axis === "z"
-        ? [0, 1, 2]
-        : axis === "x"
-        ? [3, 4, 5]
-        : axis === "y"
-        ? [6, 7, 8]
-        : [];
+        axis === 'z' ? [0,1,2]
+      : axis === 'x' ? [3,4,5]
+      : axis === 'y' ? [6,7,8]
+      : [];
     newSideColors = spinSlices(newSideColors, slices, forward);
   });
 
@@ -132,15 +121,15 @@ const reduceCommitRotate = ({ rotationQueue, sideColors }) => {
   return {
     rotation: initialRotation,
     sideColors: newSideColors,
-    rotationQueue: [],
+    rotationQueue: []
   };
 };
 
 // Reduce a spin action to sideColors
-const reduceCommitSpin = ({ sideColors, spinQueue }) => {
+const reduceCommitSpin = ({sideColors, spinQueue}) => {
   return {
     sideColors: spinSlice(sideColors, spinQueue.slice, spinQueue.direction),
-    spinQueue: null,
+    spinQueue: null
   };
 };
 
@@ -149,9 +138,9 @@ const reduceCommitSpin = ({ sideColors, spinQueue }) => {
 export default (state = {}, action = {}) => {
   switch (action.type) {
     case COMMIT_ROTATE:
-      return { ...state, ...reduceCommitRotate(state) };
+      return {...state, ...reduceCommitRotate(state)};
     case COMMIT_SPIN:
-      return { ...state, ...reduceCommitSpin(state) };
+      return {...state, ...reduceCommitSpin(state)};
     default:
       return reduceDefault(state, action);
   }
